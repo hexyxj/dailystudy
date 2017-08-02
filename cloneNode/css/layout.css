@@ -1,0 +1,42 @@
+.trueclone,.falseclone{
+    width: 200px;
+    border: 1px solid red;
+    padding: 20px;
+    margin:20px calc(50% - 120px); 
+ 
+}
+p.clone{
+    background-color: gray;
+    height: 20px;
+}
+
+*{
+    padding: 0;
+    margin: 0px;
+}
+body{
+    padding: 1em 10%;
+}
+p{
+    margin: 10px 0;
+}
+ul{
+    list-style: none;
+    padding-left:20px;
+    padding-top: 20px; 
+}
+
+span.expression{
+    display: block;
+    text-align: center;
+    font-weight: bold;
+}
+
+h3{
+    padding: 40px 0 0 0;
+}
+
+p.image{
+    padding-top:20px;
+    text-align: center; 
+}
