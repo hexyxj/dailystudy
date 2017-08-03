@@ -74,8 +74,12 @@ function moveElement(elementID, final_x, final_y, interval) {
     }
     elem.style.left = xpos + "px";
     elem.style.top = ypos + "px";
+    /* //不推荐的setTimeout参数写法
     var repeat = "moveElement('" + elementID + "'," + final_x + "," + final_y + "," + interval + ")";
     elem.movement = setTimeout(repeat, interval);
+    */
+    //新写法
+    elem.movement=setTimeout(moveElement,interval,elementID,final_x,final_y,interval);
 }
 
 /**
