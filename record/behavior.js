@@ -39,17 +39,7 @@ function cloneANode(){
     one.parentNode.insertBefore(newNode,one);
 }
 
-function elementEventAgency() {
-    // 事件代理
-    var elem = document.getElementById("test");
-    elem.addEventListener('click', function (e) {
-        if (e.target.nodeName.toLowerCase() == 'p') {
-            console.log(e);
-            console.log(e.target.innerHTML);
-        }
-    });
-}
-addLoadFunc(elementEventAgency);
+
 addLoadFunc(changeNodeOne);
 addLoadFunc(changeNodeFirst);
 addLoadFunc(changeNodeYi);
