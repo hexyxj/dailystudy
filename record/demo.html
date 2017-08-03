@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+    <head>
+        <title>setTimeout</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>    
+            #parent {
+                width:100px;
+                height:100px;
+                border:1px solid black;
+            }   
+            #child {
+                width:50px;
+                height:50px;
+                background:pink;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="parent">
+            <div id="child"></div>
+        </div>
+        <script>
+            //点击子元素，实现子元素的事件在父元素触发后触发
+            window.onload = function(){
+                var parent = document.getElementById('parent'); 
+                var child = document.getElementById('child');
+                parent.onclick = function(){
+                    console.log('parent');
+                }
+                child.onclick = function(){
+                    //利用setTimeout，冒泡结束后，最后输出child
+                    setTimeout(function(){
+                        console.log('child');   
+                    },0);
+                }
+                parent = null;
+                child = null;   
+            }
+        </script>
+    </body>
+</html>
