@@ -15,13 +15,13 @@
 <body>
     <h1>About CloneNode</h1>
     <h2>cloneNode()方法</h2>
-    <ul><li><a href="#title1">cloneNode()--true</a></li>
-    <li><a href="#title2">cloneNode()--false</a></li>
+    <ul><li><a href="#title1">cloneNode(true)</a></li>
+    <li><a href="#title2">cloneNode(false)</a></li>
     <li><a href="#title3">总结</a></li></ul>
     <p>cloneNode()方法将为给定节点创建一个副本。这个方法的返回值是一个指向该副本节点的引用指针：</p>
     <span class="expression"><i>reference=elem.cloneNode(deep);</i></span>
     <p>这个方法只有一个布尔类型的参数，它的可取值只能是true 或者 false。这个参数决定着是否要把被复制节点的字节点也一同复制到新建节点里去。</p>
-    <h3 id="title1">cloneNode()--true</h3>
+    <h3 id="title1">cloneNode(true)</h3>
     <p>当cloneNode()的参数为true时，新节点将包含着与被复制节点完全一样的子节点.</p>
     <span class="expression"><i>reference=elem.cloneNode(true);</i></span>
     <div class="trueclone">
@@ -37,7 +37,7 @@
     <p class="image"><img src="images/cloneNode_true_EventListeners_original.png" alt="originalNode event Listeners"></p>
     <p>而克隆节点却没有这个onclick事件。</p>
     <p class="image"><img src="images/cloneNode_true_EventListeners_clone.png" alt="cloneNode event Listeners"></p>
-    <h3 id="title2">cloneNode()--false</h3>
+    <h3 id="title2">cloneNode(false)</h3>
     <p>当cloneNode()的参数为false时，新节点将不包含任何子节点——如果被复制节点是一个元素节点，那么被复制的节点的所有文本将不会被复制，因为文本也是一个子节点，但该元素节点的属性节点将被复制。</p>
     <span class="expression"><i>reference=elem.cloneNode(false);</i></span>
     <div class="falseclone">
