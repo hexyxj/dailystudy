@@ -84,7 +84,7 @@
     区间：[0,1) 
     在任意min~max之间取一个随机整数的公式：parseInt(Math.random()*(max-min+1)+min);
 
-###Date
+### Date
 - 获得当前系统时间
 
     var now=new Date();
@@ -100,3 +100,54 @@
 - 将毫秒数转化为当地时间
 
     var date=new Date(ms);
+
+- API
+    - 8个单位
+    
+        FullYear:年      Month:月     Date:日      Day:星期几
+        Hours:小时       Minutes:分   Seconds:秒   Milliseconds:毫秒
+    - 每个单位都有get方法和set方法;
+        
+        如：getFullYear();setFullYear();
+        特例：day没有set方法;
+    - 取值范围
+        
+        Month:0~11;     Date:1~31;      Day:0~6;        Hours:0~23;
+        Minutes:0~59;   Seconds:0~59;   Milliseconds:0~999;
+- 时间格式化
+
+    date.toString();转为当地时间的完整格式
+    date.toLocaleString();转为当地时间的简化版本
+    date.toLocaleDateString();转为当地时间的简化版本,只保留日期部分
+    date.toLocaleTimeString();转为当地时间简化版本,只保留时间部分
+    date.toGMTString();转为GMT标准时间
+
+### Error
+- 什么是错误
+
+    代表程序执行过程中导致程序无法正常执行的原因。
+- 错误处理
+    
+    - 什么是：即使程序发生错误，也保证不异常退出的机制
+    - 为什么：任何程序只要发生错误，就会立即中断退出
+    - 何时：只要希望程序即使出错，也不会中断退出
+    - 如何：
+    `````````````
+        try{
+            //可能出错的代码
+        }catch(err){
+            //只有出错才执行的错误处理代码
+            //比如: 错误提示，记录日志，保存进度/数据
+        }finally{
+            //无论是否出错都必须执行的代码
+            //释放资源
+        }
+    ````````````` 
+- Error错误对象
+
+    - 什么是：在发生错误是自动创建的封装错误信息的对象
+    - name 错误类型
+        SyntaxError,referenceError,TypeError,
+        RangeError,EvalError,URIError
+    - message 错误提示信息
+    - String(err) 错误类型：错误提示信息
