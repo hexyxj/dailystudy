@@ -112,8 +112,8 @@
         特例：day没有set方法;
     - 取值范围
         
-        Month:0~11;     Date:1~31;      Day:0~6;        Hours:0~23;
-        Minutes:0~59;   Seconds:0~59;   Milliseconds:0~999;
+        Month:0-11;     Date:1-31;      Day:0-6;        Hours:0-23;
+        Minutes:0-59;   Seconds:0-59;   Milliseconds:0-999;
 - 时间格式化
 
     date.toString();转为当地时间的完整格式
