@@ -15,7 +15,7 @@
         
     - none 默认值，不浮动
  
-    - inherit 集成父元素的浮动属性
+    - inherit 继承父元素的浮动属性
 ----
 ### Position 位置/定位
 
