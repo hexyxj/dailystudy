@@ -52,7 +52,7 @@
                 //访问不存在的成员->undefined
                 ```````````
             > ECMA-262 把对象定义为:"无序属性的集合，其属性可以包含基本值、对象或者函数。"严格来讲,这就相当于说对象是一组没有特定顺序的值。对象的每个属性或方法都有一个名字,而每个名字都映射到一个值。正因为这样,我们可以把 ECMAScript 的对象想象成散列表:无非就是一组名值对,其中值可以是数据或函数。
-            ##### 使用对象直接量和new的缺点:反复创建多个相同结构的对象时，会造成大量重复的代码
+            ##### 创建对象使用对象直接量和new的缺点:反复创建多个相同结构的对象时，会造成大量重复的代码
         3. 构造函数
             ```````````
             //定义构造函数
@@ -70,9 +70,9 @@
             ```````````
             > 要创建 Person 的新实例,必须使用 new 操作符.以这种方式调用构造函数实际上会经历以下 4 个步骤:
             > (1) 创建一个新的空对象
-            > (2) 自动让新的子对象继承构造函数的原型对象
-            > (3) 调用构造函数，将构造函数中的this执行正在创建的新对象。向新的空对象中强行添加新成员
-            > (4) 将新对象地址返回给变量保存
+            > (2) 设置新的子对象的__proto__继承构造函数的prototype对象
+            > (3) 调用构造函数,将构造函数中的this自动替换为当前新对象,构造函数将规定的属性添加到新对象中,并将传入的参数值保存在新对象的新属性中
+            > (4) 返回新对象的地址保存到变量中
             ##### 构造函数的优点:重用结构定义;
             ##### 构造函数的缺点:浪费内存,每个方法都要在实例上重新创建;
 
@@ -129,5 +129,69 @@
         - 何时使用重写:只要子对象觉得父对象的成员不好用,就可以重写
     - 为什么:
 
+- 自定义继承
+    - 何时：只要觉得默认的父对象不好用时，可换父对象
+    - 如何：3种
+        1. 仅修改两个对象间的继承关系:
+            - 获得子对象的父对象
+                - var father=Object.getPrototypeOf(child);
+            - 设置子对象继承指定父对象
+                - child.__proto__=father;
+                - 问题:__proto__是内部属性
+                - 解决：Object.setPrototypeOf(child,father);
+        2. 修改构造函数原型对象，来修改所有子对象的父对象
+            - 构造函数.prototype=father
+            - 时机:必须紧跟在构造函数定义之后,开始创建子对象之前
+        3. 两种类型间的继承
+            - 何时:如果发现多个类型拥有部分相同的属性结构和方法定义,都要抽象父类型
+            - 如何:2步
+                1. 定义抽象父类型
+                    - 相同的属性结构定义在父类型的构造函数中
+                    - 相同的方法定义在父类型的原型对象中
+                2. 让子类型继承父类型
+                    - 在子类型构造函数中借用父类型构造
+                        - extends
+                            - 让父类型构造函数帮助添加相同部分的属性定义
+                            - 子类型构造函数仅负责添加独有的属性定义即可
+                        - 错误:
+                            - 直接调用父类型构造函数
+                            - this->window:父类型中的属性都泄露到全局
+                        - 正确
+                            - 父类型构造.call(this, 参数1,参数2,...)
+                            - 简写:父类型构造.apply(this, arguments);
+                    - 让子类型原型对象继承父类型原型对象
+                        - inherits
+                        - Object.setPrototypeOf(子类型构造.prototype, 父类型构造.prototype);
+                `````````````````
+                //创建抽象父类构造函数
+                function Flyer(fname,speed){
+                    this.fname=fname;
+                    this.speed.speed;
+                }
+                //设置抽象父类原型对象
+                Flyer.prototype.fly=function(){
+                    console.log("fly");
+                };
+                //创建子类构造函数
+                function Plane(fname,speed,score){
+                    //在子类中调用父类的构造函数
+                    Flayer.call(this,fname,speed);
+                    this.score=score;
+                }
+                //设置子类原型对象
+                Plane.prototype.getScore=function(){
+                    console.log("Palne getScore");
+                };
+                //让子类原型对象继承父类原型对象
+                Object.setPrototypeOf(Plane.prototype,Flyer.prototype);
+                function Bee(fname,speed,award){
+                   Flayer.call(this,fname,speed);
+                    this.award=award; 
+                }
+                Bee.prototype.getAward()=function(){
+                    console.log("Bee getAward");
+                };
+                Object.setPrototypeOf(Bee.prototype,Flyer.prototype);
+                `````````````````
 
 
