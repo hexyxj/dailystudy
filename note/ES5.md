@@ -148,4 +148,10 @@
                 ... : ...
             }
         });
+        /*Object.create = function(p) {
+            //create方法不存在时
+            function f(){}
+            f.prototype = p;
+            return new f();
+        }*/
         ````````
