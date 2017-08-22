@@ -59,3 +59,48 @@
     - 不同: 
       - call:传入借用函数的参数,必须单独传入,逗号分隔
       - apply:传入借用函数的参数,放在一个数组中整体传入;可自动打散数组类型参数
+
+- 数组去重复,且考虑百万数量级
+    ``````````
+    for(var i=0,arr=[];i<1000000;i++){
+		arr[i]=parseInt(Math.random()*1000+9000)
+	}
+    /* 1.慢*/
+    function repeat1(arr){
+        var res=[];
+        for(var i=0,l=arr.length;i < l;i++){
+            if(res.indexOf(arr[i])==-1){
+                res.push(arr[i]);
+            }
+        }
+        return res;
+    }
+    /* 2.一般 */
+    function repeat2(arr){
+        var set=new Set(arr);
+        return [...set];
+    }
+    /* 3.最快 */ 
+    function repeat3(arr){
+		var res=[];
+		var hash={};
+		for(var i=0,l=arr.length;i < l;i++){
+			if(hash[arr[i]]===undefined){
+				hash[arr[i]]=1;
+				res.push(arr[i]);
+			}
+		}
+		return res;
+	}
+    console.time("repeat1");//start
+	repeat1(arr);
+	console.timeEnd("repeat1");//end
+	console.time("repeat2");//start
+	repeat2(arr);
+	console.timeEnd("repeat2");//end
+	console.time("repeat3");//start
+	repeat3(arr);
+	console.timeEnd("repeat3");//end
+    ``````````
+
+		

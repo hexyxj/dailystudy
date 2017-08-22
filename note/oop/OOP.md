@@ -198,3 +198,23 @@
                 `````````````````
 
 
+        4. Object.create
+            - 三件事:基于现有父对象,创建一个子对象,在扩展新属性
+            - 何时:如果只有父对象,没有构造函数,也想创建子对象
+            - 如何:
+                ````````
+                var child=Object.create(father,{
+                    //可扩展child的自有属性
+                    //defineProperties
+                    属性名:{
+                        特性名 : 值
+                        ... : ...
+                    }
+                });
+                /*Object.create = function(p) {
+                    //create方法不存在时
+                    function f(){}
+                    f.prototype = p;
+                    return new f();
+                }*/
+                ````````

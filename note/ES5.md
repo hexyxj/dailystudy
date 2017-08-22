@@ -16,6 +16,7 @@
         - 禁止给未声明的变量赋值
         - 静默失败升级为错误
         - arguments, arguments.callee不推荐使用
+        - 匿名自调函数中的this不在自动指向window,而是undefined
 
 - 保护对象
     - 为什么:传统JS中,对象的属性值和结构,可随意更改,毫无自保能力
@@ -108,7 +109,16 @@
                     }
                 })();
                 ``````````
-
+    - 内部属性
+        - 内部属性: 不能用.访问到的属性
+        - __proto__
+            - Object.getPrototypeOf(obj)
+            - Object.setPrototypeOf(child,father)
+        - class
+            - Object.prototype.toString.call(obj)
+        - extensible:true
+            - var bool=Object.isExtensible(obj)
+            - Object.preventExtensions(obj)
     - 防篡改
         - 防扩展:禁止为对象强行添加属性
             `````````
@@ -155,3 +165,72 @@
             return new f();
         }*/
         ````````
+- call/apply/bind
+    - 何时: 只要函数中的this不是想要的，就可用call/apply/bind替换
+    - call和apply:立刻调用函数执行,同时临时替换函数中的this
+        - 何时:如果立刻执行，且临时替换this
+        - 如何:
+            - fun.call(obj, 参数值列表)
+                - 调用fun
+                - 替换fun中的this为obj
+                - 将参数值列表传递给fun
+            - fun.apply(obj, 参数值数组)
+            - apply vs call
+                - apply要求传入fun的参数必须放在数组中整体传入
+                - apply可自动将数组打散为单个参数值分别传入
+    - bind
+        - 基于一个现有函数，创建一个新函数，并永久绑定this和部分参数
+        - 何时:只要替换回调函数中的this时
+        - 如何:
+            - var newFun=fun.bind(obj, 参数值列表 )
+            - 创建一个和fun功能完全一样的新函数
+            - 永久绑定新函数中的this为obj
+            - 永久绑定新函数中的部分参数为参数值列表中的值
+        - 强调: 被bind创建的函数中的this和绑定的变量，任何情况下不能再被call替换
+- 数组API
+    - every:若数组中每个元素都满足测试函数,则返回true,否则返回false
+        - 语法:
+        ````````
+        //arr.every(callback[, thisArg]);
+        //callback:回调函数
+        //thisArg:可选,执行回调函数时使用的this值
+        var bool=function(element,index,array){
+            return 判断条件;
+        }
+        ````````
+    - some:若数组中至少有一个元素满足测试函数,返回true,否则返回false
+        - 语法:同every
+    - foreach:为数组中每个元素执行一次回调函数
+        - 语法:
+        `````````
+        //arr.foreach(callback[, thisArg]);
+        //callback:回调函数
+        //thisArg:可选,执行回调函数时使用的this值,若不提供该参数,或者赋值为null或者undefined,则this指向全局对象
+        //直接修改原数组
+        `````````
+    - map:返回一个由回调函数的返回值组成的新数组
+        - 语法:
+        `````````````
+        //arr.map(callback[, thisArg]);
+        //callback:回调函数
+        //thisArg:可选,执行回调函数时使用的this值,若不提供该参数,或者赋值为null或者undefined,则this指向全局对象
+        //不修改原数组，返回新数组
+        `````````````
+    - filter:将所有在过滤函数中返回true的数组元素放进一个新的数组中并返回
+        - 语法:
+        ``````````
+        var new_arr=arr.filter(callback[,thisArg])
+        //callback:回调函数,返回true保留该元素,false则不保留
+        //thisArg:可选,执行回调函数时使用的this值
+        ``````````
+    - reduce:从左到右为每个数组元素执行一次回调函数,并把上次回调函数的返回值放在一个暂存器中传给下次回调函数,并返回最后一次回调函数的返回值
+        - 语法:
+        ```````````
+        arr.reduce(callback[,initialValue]);
+        //callback:回调函数,包含4个参数
+        //1.accumulator:上一次调用回调返回的值,或是提供的初始值(initialValue);
+        //2.currentValue:数组中正在处理的元素;
+        //3.currentIndex:数据中正在处理的元素索引,如果没有提供initialValue,默认从0开始;
+        //4.array:调用reduce的数组
+        //initialValue:作为第一次调用callback的第一个参数
+        ```````````
