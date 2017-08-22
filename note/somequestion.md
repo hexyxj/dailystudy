@@ -102,5 +102,26 @@
 	repeat3(arr);
 	console.timeEnd("repeat3");//end
     ``````````
+- 定义一个函数,遍历指定父节点下所有子元素
+    ``````````
+    //方法1
+    function getChildren1(parent) {
+        console.log(parent.nodeName);
+        var children = parent.children;
+        for (var i = 0, l = children.length; i < l; i++) {
+            arguments.callee(children[i]);
+        }
+    } //深度优先遍历
+    getChildren1(document.body);
+    //方法2
+    function getChildren2(parent) {
+        var iterator = document.createNodeIterator(parent, NodeFilter.SHOW_ELEMENT, null, false);
+        var currNode = null;
+        while ((currNode = iterator.nextNode()) != null) {
+            console.log(currNode.nodeName);
+        }
+    }
+    getChildren2(document.body);
+    ```````````
 
 		
