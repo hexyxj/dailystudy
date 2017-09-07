@@ -1,6 +1,6 @@
 /**
  * 向onload添加函数
- * @param {*页面加载完成后要执行的函数} func
+ * @param {*function} func:页面加载完成后要执行的函数
  */
 function addLoadFunc(func) {
     var oldonload = window.onload;
@@ -16,8 +16,8 @@ function addLoadFunc(func) {
 
 /**
  * 在一个给定节点之后添加一个节点
- * @param {*要添加的节点} newElement
- * @param {*给定节点} targetElement
+ * @param {*HTMLElement} newElement:要添加的节点
+ * @param {*HTMLElement} targetElement:给定节点
  */
 function insertAfter(newElement, targetElement) {
     var parent = targetElement.parentNode;
@@ -30,8 +30,8 @@ function insertAfter(newElement, targetElement) {
 
 /**
  * 交换两个节点
- * @param {*被交换节点} firstNode
- * @param {*被交换节点} secondNode
+ * @param {*HTMLElement} firstNode:被交换节点
+ * @param {*HTMLElement} secondNode:被交换节点
  */
 function changeNode(firstNode, secondNode) {
     if (firstNode.nextSibling) {
@@ -72,4 +72,3 @@ function elementEventAgency() {
     });
 }
 addLoadFunc(elementEventAgency);
-
