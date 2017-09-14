@@ -136,6 +136,7 @@
         }
         return newObj;
     }
+    console.log(obj == shallowObj);//false;
 ```````````
 
 - 因为浅拷贝只会将对象的各个属性进行依次拷贝，并不会进行递归拷贝，而 JavaScript 存储对象都是存地址的，所以浅拷贝会导致 obj.arr 和 shallowObj.arr 指向同一块内存地址,如图:
