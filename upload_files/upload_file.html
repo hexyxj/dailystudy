@@ -61,7 +61,8 @@
                 return;
             }
             //预览
-            var img=window.webkitURL.createObjectURL(fileList[0]);
+            // var img=window.webkitURL.createObjectURL(fileList[0]);
+            var img=window.URL.createObjectURL(fileList[0]);
             var str=`<img src="${img}"/>图片名称:${fileList[0].name} 图片大小:${size}`;
             $("#preview").html(str);
             //ajax上传
