@@ -1,47 +1,28 @@
 ## Some Questions
+### JavaScript
 - 判断一个对象是不是数组类型,有几种方法: 
     1. 判断原型对象: 
-            
-        Object.getPrototypeOf(obj)==Array.prototype   
-            
-        判断obj是数组类型的子对象
-            
-        问题: __proto__是内部属性,本不应该被访问到
-            
-        解决: 用Object.getPrototypeOf(obj) 代替__proto__; 或者使用var bool=Array.prototype.isPrototypeOf(obj);
-            
+        - Object.getPrototypeOf(obj)==Array.prototype   
+        - 判断obj是数组类型的子对象
+        - 问题: __proto__是内部属性,本不应该被访问到
+        - 解决: 用Object.getPrototypeOf(obj) 代替__proto__; 或者使用var bool=Array.prototype.isPrototypeOf(obj);
     2. 判断构造函数:
-            
-        obj instanceof Array 
-        
-        判断obj是不是被构造函数Array创造出来的
-            
-        instanceof 不仅判断直接父类型,而是查找整个原型链上的类型,只要符合就返回true！
+        - obj instanceof Array 
+        - 判断obj是不是被构造函数Array创造出来的
+        - instanceof 不仅判断直接父类型,而是查找整个原型链上的类型,只要符合就返回true！
     3. 判断对象的内部class属性
-            
-        每个对象内部,都有一个隐藏的class属性,记录该对象创建时的数据类型
-            
-        class属性不会随继承关系的改变而改变
-            
-        问题1: class是内部属性
-            
-        解决: 只有最顶层的toString()才能输出对象的class属性值
-            
-        [object class名]
-            
-        问题2: 内置类型的原型对象中几乎都重写了新的toString()
-            
-        解决: 用call强行调用: 
-            
-        call: 让一个对象,调用一个本来无法调用到的函数
-            
-        何时: 只要希望调用一个本无法调用到的函数
-            
-        如何: 要调用的函数.call(对象)
-            
-        Object.prototype.toString.call(obj)=="[object Array]"
-            
-        说明obj的内部属性class的值为"Array"
+        - 每个对象内部,都有一个隐藏的class属性,记录该对象创建时的数据类型
+        - class属性不会随继承关系的改变而改变
+        - 问题1: class是内部属性
+        - 解决: 只有最顶层的toString()才能输出对象的class属性值
+        - [object class名]
+        - 问题2: 内置类型的原型对象中几乎都重写了新的toString()
+        - 解决: 用call强行调用: 
+        - call: 让一个对象,调用一个本来无法调用到的函数
+        - 何时: 只要希望调用一个本无法调用到的函数
+        - 如何: 要调用的函数.call(对象)
+        - Object.prototype.toString.call(obj)=="[object Array]"
+        - 说明obj的内部属性class的值为"Array"
     4. Array.isArray(obj) //ES5
 
 - new在创建一个对象时,经历了哪几步？
@@ -131,5 +112,313 @@
     3. 易用性:条件复杂,按HTML繁琐,按选择器简洁
         - 如果一个条件就能找到想要的元素是就按HTML查找
         - 如果查找条件复杂时就用按选择器查找
+- 一道js面试题
+    `````````````
+    function Foo() {
+        getName = function() {
+            alert(1);
+        };
+        return this;
+    }
+    Foo.getName = function() {
+        alert(2);
+    };
+    Foo.prototype.getName = function() {
+        alert(3);
+    };
+    var getName = function() {
+        alert(4);
+    };
+    function getName() {
+        alert(5);
+    }
 
-		
+    //请写出以下输出结果：
+    Foo.getName();//2
+    getName();//4 
+    Foo().getName();//1 
+    getName();//4 error ->1 
+    new Foo.getName();//2 
+    new Foo().getName();//3 
+    new new Foo().getName();//3 
+    `````````````
+    - 解析
+        1. Foo.getName();//2 调用了Foo的静态方法
+        2. getName();//4 声明提前
+        3. Foo().getName();//1 调用Foo()函数,执行后全局变量getName被重新赋值,同时返回this,此this为window,接着调用window.getName() 
+        4. getName();//1 第三问执行后,变量getName被重新赋值了
+        5. new Foo.getName();//2 运算符优先级 成员访问. > new > 函数调用() =>new (Foo.getName)() 将getName当做构造函数执行
+        6. new Foo().getName();//3 这里成员访问的优先级是最高的,因此先执行了 .getName,但是在进行左侧取值的时候, new Foo() 可以理解为两种运算：new 带参数（即 new Foo()）和函数调用（即 先 Foo() 取值之后再 new）,而 new 带参数的优先级是高于函数调用的,因此先执行了 new Foo(),或得 Foo 类的实例对象,再进行了成员访问 .getName.
+        7. new new Foo().getName();//3 new ((new Foo()).getName)(); 先初始化Foo的实例化对象,然后将其原型上的getName函数作为构造函数再次new.
+- 一道经典js闭包题
+    ``````````````
+    function fun(n,o) {
+        console.log(o)
+        return {
+            fun:function(m){
+            return fun(m,n);
+            }
+         };
+    }
+    var a = fun(0);  a.fun(1);  a.fun(2);  a.fun(3);//undefined,0,0,0
+    var b = fun(0).fun(1).fun(2).fun(3);//undefined,0,1,2
+    var c = fun(0).fun(1);  c.fun(2);  c.fun(3);//undefined,0,1,1
+    //问:三行a,b,c的输出分别是什么？
+    ``````````````
+    - 解析
+    1. 第一行a
+        > var a = fun(0);  a.fun(1);  a.fun(2);  a.fun(3);
+        - 可以得知,第一个fun(0)是在调用第一层fun函数.第二个fun(1)是在调用前一个fun的返回值的fun函数,所以：
+        - 后面几个fun(1),fun(2),fun(3),函数都是在调用第二层fun函数.
+        - 因此：
+        - 在第一次调用fun(0)时,o为undefined;
+        - 第二次调用fun(1)时m为1,此时fun闭包了外层函数的n,也就是第一次调用的n=0,即m=1,n=0,并在内部调用第一层fun函数fun(1,0),所以o为0;
+        - 第三次调用fun(2)时m为2,但依然是调用a.fun,所以还是闭包了第一次调用时的n,所以内部调用第一层的fun(2,0);所以o为0
+        - 第四次同理;
+        - 即：最终答案为undefined,0,0,0
+    2. 第二行b
+        > var b = fun(0).fun(1).fun(2).fun(3);//undefined,?,?,?
+        - 先从fun(0)开始看,肯定是调用的第一层fun函数;而他的返回值是一个对象,所以第二个fun(1)调用的是第二层fun函数,后面几个也是调用的第二层fun函数.
+        - 因此：
+        - 在第一次调用第一层fun(0)时,o为undefined;
+        - 第二次调用 .fun(1)时m为1,此时fun闭包了外层函数的n,也就是第一次调用的n=0,即m=1,n=0,并在内部调用第一层fun函数fun(1,0),所以o为0;
+        - 第三次调用 .fun(2)时m为2,此时当前的fun函数不是第一次执行的返回对象,而是第二次执行的返回对象.而在第二次执行第一层fun函数时时(1,0)所以n=1,o=0,返回时闭包了第二次的n,遂在第三次调用第三层fun函数时m=2,n=1,即调用第一层fun函数fun(2,1),所以o为1;
+        - 第四次调用 .fun(3)时m为3,闭包了第三次调用的n,同理,最终调用第一层fun函数为fun(3,2);所以o为2;
+        - 即最终答案：undefined,0,1,2
+    3. 第三行c
+        > var c = fun(0).fun(1);  c.fun(2);  c.fun(3);//undefined,?,?,?
+        - 根据前面两个例子,可以得知：
+        - fun(0)为执行第一层fun函数,.fun(1)执行的是fun(0)返回的第二层fun函数,这里语句结束,遂c存放的是fun(1)的返回值,而不是fun(0)的返回值,所以c中闭包的也是fun(1)第二次执行的n的值.c.fun(2)执行的是fun(1)返回的第二层fun函数,c.fun(3)执行的也是fun(1)返回的第二层fun函数.
+        - 遂：
+        - 在第一次调用第一层fun(0)时,o为undefined;
+        - 第二次调用 .fun(1)时m为1,此时fun闭包了外层函数的n,也就是第一次调用的n=0,即m=1,n=0,并在内部调用第一层fun函数fun(1,0),所以o为0;
+        - 第三次调用 .fun(2)时m为2,此时fun闭包的是第二次调用的n=1,即m=2,n=1,并在内部调用第一层fun函数fun(2,1);所以o为1;
+        - 第四次.fun(3)时同理,但依然是调用的第二次的返回值,遂最终调用第一层fun函数fun(3,1),所以o还为1
+        - 即最终答案：undefined,0,1,1
+
+### HTML && CSS
+- 水平垂直居中的方法
+    - 父容器子容器不确定宽高的块级元素,做上下居中
+    1. flex
+    ``````````````
+    <style>
+        #wrap{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+    </style>
+    ``````````````
+    2. table
+    ``````````````
+    <style>
+        .parent{
+            text-align:center;//水平居中
+            display:table-cell;
+            vertical-align:middle;//垂直居中
+        }
+        .child{
+            display:inline-block;
+        }
+    </style>
+    ``````````````
+    3. absolute+transform 水平垂直居中
+    `````````````
+    <div class="parent">
+        <div class="child">Demo</div>
+    </div>
+    <style>
+        .parent{
+            position:relative;
+        }
+        .child{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+        }
+    </style>
+    `````````````
+    4. absolute+margin
+    ``````````````
+    <style>
+        .parent{
+            position:relative;
+        }   
+        .child{
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -50px 0 0 -50px;
+        }
+    </style>
+    ``````````````
+    5. webkit-box 
+    ```````````````
+    <style>
+        .parent{
+            position:relative;
+            display:-webkit-box;
+            -webkit-box-align:center;
+            -webkit-box-pack:center;
+        }
+        .child{
+            -webkit-box-flex:0;
+        }
+    </style>
+    ```````````````
+- 实现左边定宽右边自适应效果
+    1. flex
+        - 父级元素:display:flex;
+        - 右边子元素:flex:1
+    2.浮动
+        - 左边定宽,并且左浮动
+        - 右边设置距离左边的宽度
+    3. 绝对定位
+        - 左边定宽,设置position:absolute;
+        - 右边设置距离左边的宽度
+- 三列布局,中间固定两边自适应宽度
+    1. flex
+    flex
+    ``````````````````````
+    <div id = "box">  
+        <div id = "left"></div>  
+        <div id = "center"></div>  
+        <div id = "right"></div>  
+    </div>  
+    <style>
+        #box{
+            display:flex;
+        }
+        #left,#right{
+            flex:1;
+            height:100px;
+        }
+        #center{
+            width:200px;
+            height:100px;
+        }
+    </style>
+    ``````````````````````
+    2. calc
+    `````````````````
+    <div id="left"></div>
+    <div id="center"></div>
+    <div id="right"></div>
+    <style>
+        #center{
+            display:inline-block;
+            width:200px;
+            height:100px;
+        }
+        #left,#right{
+            display:inline-block;
+            width:calc(50%-100px);
+        }
+    </style>
+    `````````````````
+- 三列布局,两边宽度固定,中间自适应
+    1. 绝对定位
+    ``````````````````
+    //绝对定位法原理是将左右两边使用absolute定位,因为绝对定位使其脱离文档流,后面的center会自然流动到他们上面,然后使用margin属性,留出左右元素的宽度,既可以使中间元素自适应屏幕宽度.
+    <div id = "left"></div>  
+    <div id = "right"></div>  
+    <div id = "center"></div> 
+    <style>
+        #left,#right{
+            width: 200px;
+            height: 200px; 
+            position: absolute;
+        }  
+        #left{
+            left:0px;
+        }  
+        #right{
+            right: 0px;
+        }  
+        #center{
+            margin:0 200px ;
+            height: 200px; 
+        } 
+    </style> 
+    //该法布局的好处,三个div顺序可以任意改变.不足是:因为绝对定位,所以如果页面上还有其他内容,top的值需要小心处理,最好能够对css样式进行一个初始化,如果不对样式进行初始化,则两边和中间的值会对不齐. 如果中间栏含有最小宽度限制,或是含有宽度的内部元素,当浏览器宽度小到一定程度,会发生层重叠的情况.
+    ``````````````````
+    2. 浮动
+    ``````````````````
+    //使用对左右使用分别使用float:left和float:right,float使左右两个元素脱离文档流,中间元素正常在正常文档流中,使用margin指定左右外边距对其进行一个定位.
+    <div id = "left"></div>  
+    <div id = "right"></div>  
+    <div id = "center"></div>
+    <style>
+        #left,#right{ 
+            width: 200px;
+            height: 200px; 
+        }  
+        #left{
+            float: left;
+        }  
+        #right{
+            float: right;
+        }  
+        #center{
+            margin: 0 200px;
+            height: 200px; 
+        }  
+    </style> 
+    // 该布局法的好处是受外界影响小,但是不足是:三个元素的顺序,center一定要放在最后,这是和绝对定位不一样的地方,center占据文档流位置,所以一定要放在最后,左右两个元素位置没有关系.当浏览器窗口很小的时候,右边元素会被击倒下一行.
+    ``````````````````
+    3. margin负值
+    ``````````````
+    //首先需要在center元素外部包含一个div,包含div需要设置float属性使其形成一个BFC:Block Formatting Context (块级格式化上下文),并设置宽度,并且这个宽度要和left块的margin负值进行配合
+    <div id = "wrap">  
+        <div id = "center"></div>  
+    </div>  
+    <div id = "left"></div>  
+    <div id = "right"></div> 
+    <style>
+        #wrap{ 
+            width: 100%;
+            height: 100px; 
+            float: left;
+        }  
+        #wrap #center{ 
+            margin:0 200px; 
+            height: 100px;
+        }  
+        #left,#right{ 
+            float: left;
+            width: 200px;
+            height: 100px;
+        }  
+        #left{
+            margin-left: -100%; 
+        }  
+        #right{
+            margin-left: -200px;
+        }  
+    </style>
+    //三栏相互关联,有一定的抗性.需要注意的是,布局中间部分一定要放在前面,左右顺序不限制.对于left块的margin负值一定要等于wrap的宽度.
+    ``````````````
+    4. flex
+    ``````````````````````
+    <div id = "box">  
+        <div id = "left"></div>  
+        <div id = "center"></div>  
+        <div id = "right"></div>  
+    </div>  
+    <style>
+        #box{
+            display:flex;
+        }
+        #left,#right{
+            width:200px;
+            height:100px;
+        }
+        #center{
+            flex:1;
+            height:100px;
+        }
+    </style>
+    ``````````````````````
